@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,273 +8,59 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFC; max-width: 500px; margin: 0 auto; box-shadow: 0 0 50px rgba(0,0,0,0.1); min-height: 100vh; overflow-x: hidden; }
+        .app-header { background: white; position: sticky; top: 0; z-index: 100; padding: 15px 20px; border-bottom: 1px solid #f1f5f9; }
+        .nav-btn.active { background: #10B981; color: white; box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+        .banner-wrapper { width: 92%; margin: 15px auto; padding-top: 50%; position: relative; overflow: hidden; border-radius: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+        #slider { display: flex; position: absolute; top: 0; left: 0; height: 100%; width: 100%; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .slide-container { min-width: 100%; height: 100%; }
+        .banner-img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .list-container { background: white; border-radius: 28px; border: 1px solid #f1f5f9; overflow: hidden; }
+        .list-item { display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid #f8fafc; transition: 0.2s; }
+        .list-item:active { background-color: #f1f5f9; }
+        
+        .thumb-circle { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; flex-shrink: 0; border: 2px solid #f1f5f9; position: relative; }
+        .thumb-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .thumb-circle .play-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #F8FAFC;
-            max-width: 500px;
-            margin: 0 auto;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+        .ad-container { padding: 10px 16px; background: #fffbeb; border-bottom: 1px solid #fef3c7; margin: 5px 0; }
+        .ad-banner-box { width: 100%; border-radius: 15px; overflow: hidden; border: 1px solid #fde68a; }
+        .ad-banner-box img { width: 100%; height: auto; display: block; }
+        .ad-label { font-size: 8px; font-weight: 800; color: #b45309; background: #fef3c7; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 4px; text-transform: uppercase; }
 
-        .app-header {
-            background: white;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 15px 20px;
-            border-bottom: 1px solid #f1f5f9;
-        }
+        #adLoader { display: none; position: fixed; inset: 0; background: white; z-index: 20000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .loader-spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #10B981; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .nav-btn.active {
-            background: #10B981;
-            color: white;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        }
-
-        .banner-wrapper {
-            width: 92%;
-            margin: 15px auto;
-            padding-top: 50%;
-            position: relative;
-            overflow: hidden;
-            border-radius: 24px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        #slider {
-            display: flex;
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .slide-container {
-            min-width: 100%;
-            height: 100%;
-        }
-
-        .banner-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .list-container {
-            background: white;
-            border-radius: 28px;
-            border: 1px solid #f1f5f9;
-            overflow: hidden;
-        }
-
-        .list-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            border-bottom: 1px solid #f8fafc;
-            transition: 0.2s;
-        }
-
-        .list-item:active {
-            background-color: #f1f5f9;
-        }
-
-        .thumb-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            overflow: hidden;
-            flex-shrink: 0;
-            border: 2px solid #f1f5f9;
-            position: relative;
-        }
-
-        .thumb-circle img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .thumb-circle .play-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 10px;
-        }
-
-        .ad-container {
-            padding: 10px 16px;
-            background: #fffbeb;
-            border-bottom: 1px solid #fef3c7;
-        }
-
-        .ad-banner-box {
-            width: 100%;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 1px solid #fde68a;
-        }
-
-        .ad-banner-box img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .ad-label {
-            font-size: 8px;
-            font-weight: 800;
-            color: #b45309;
-            background: #fef3c7;
-            padding: 2px 8px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-        }
-
-        #adLoader {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: white;
-            z-index: 20000;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .loader-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #10B981;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .quick-links-scroll {
-            display: flex;
-            overflow-x: auto;
-            gap: 15px;
-            padding: 10px 20px;
-            scrollbar-width: none;
-        }
-
-        .quick-links-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .cat-item {
-            flex: 0 0 auto;
-            text-align: center;
-            width: 65px;
-        }
-
-        .cat-img-wrap {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            padding: 2px;
-            background: linear-gradient(45deg, #10B981, #3B82F6);
-            margin: 0 auto;
-        }
-
-        .cat-img-wrap img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid white;
-            object-fit: cover;
-        }
-
-        #socialPopup {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.9);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            backdrop-filter: blur(8px);
-        }
-
-        .popup-content {
-            background: white;
-            width: 100%;
-            max-width: 320px;
-            border-radius: 35px;
-            padding: 30px;
-            text-align: center;
-            transform: scale(0.9);
-            animation: pop 0.3s forwards;
-        }
-
-        @keyframes pop {
-            to {
-                transform: scale(1);
-            }
-        }
-
-        .channel-list-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            padding: 10px;
-        }
-
-        .channel-circle-card {
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .channel-circle-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 3px solid #10B981;
-            padding: 3px;
-            margin: 0 auto;
-            object-fit: cover;
-        }
+        .quick-links-scroll { display: flex; overflow-x: auto; gap: 15px; padding: 10px 20px; scrollbar-width: none; }
+        .quick-links-scroll::-webkit-scrollbar { display: none; }
+        .cat-item { flex: 0 0 auto; text-align: center; width: 65px; }
+        .cat-img-wrap { width: 55px; height: 55px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, #10B981, #3B82F6); margin: 0 auto; }
+        .cat-img-wrap img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid white; object-fit: cover; }
+        
+        #socialPopup { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9); z-index: 10000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px); }
+        .popup-content { background: white; width: 100%; max-width: 320px; border-radius: 35px; padding: 30px; text-align: center; transform: scale(0.9); animation: pop 0.3s forwards; }
+        @keyframes pop { to { transform: scale(1); } }
+        .channel-list-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 10px; }
+        .channel-circle-card { text-align: center; cursor: pointer; }
+        .channel-circle-img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #10B981; padding: 3px; margin: 0 auto; object-fit: cover; }
     </style>
 </head>
-
 <body class="pb-20">
 
     <div id="adLoader">
         <div class="loader-spinner"></div>
-        <p class="text-xs font-black text-slate-500 uppercase tracking-widest mb-8">Video Loading...</p>
+        <p class="text-xs font-black text-slate-500 uppercase tracking-widest mb-8 text-center">Video Loading...<br><span class="text-[9px] text-slate-400">Sponsored Ad Below</span></p>
         <div class="w-full bg-slate-50 p-4 rounded-3xl border border-slate-100">
             <span class="ad-label">Special Sponsored</span>
             <div id="loaderAdContent" class="ad-banner-box"></div>
         </div>
     </div>
+
     <div id="socialPopup">
         <div class="popup-content">
             <div class="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-bell"></i></div>
@@ -311,9 +96,7 @@
 
     <div id="sectionPublic">
         <div id="catList" class="quick-links-scroll mt-4"></div>
-        <div class="banner-wrapper">
-            <div id="slider"></div>
-        </div>
+        <div class="banner-wrapper"><div id="slider"></div></div>
         <div class="px-5 mt-6 mb-3 flex justify-between items-center">
             <h2 class="font-black text-slate-800 text-[12px] uppercase tracking-tighter">Top Trending Posts</h2>
             <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
@@ -347,122 +130,101 @@
         let allChannelPosts = [];
         let adBanners = [];
         let socialLinks = {};
+        let webLink = ""; // Will be loaded from web.html data
+
+        // Load Web Link for sharing
+        db.ref('settings/webLink').on('value', snap => {
+            webLink = snap.val() || "https://vairalhub.com";
+        });
+
+        // WhatsApp Share Function
+        function shareToWhatsApp(img, title) {
+            const message = `🔥 *${title}*\n\n👉 Watch Full Video :\n${webLink}`;
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
 
         function handleWatchClick(postId, videoUrl) {
             const loader = document.getElementById('adLoader');
             const loaderAd = document.getElementById('loaderAdContent');
-            if (adBanners.length > 0) {
-                const randomAd = adBanners[Math.floor(Math.random() * adBanners.length)];
-                loaderAd.innerHTML = `<img src="${randomAd.img}" class="w-full rounded-xl shadow-sm">`;
+            const specialAds = adBanners.filter(ad => ad.special === true && !ad.hidden);
+            
+            if(specialAds.length > 0) {
+                const randomAd = specialAds[Math.floor(Math.random() * specialAds.length)];
+                loaderAd.innerHTML = `<img src="${randomAd.img}" class="w-full rounded-xl shadow-sm" onclick="window.open('${randomAd.link}', '_blank')">`;
+            } else {
+                loaderAd.innerHTML = `<p class="text-[10px] text-slate-400 text-center py-4">Loading Video...</p>`;
             }
+
             loader.style.display = 'flex';
-            db.ref('settings/posts/' + postId + '/clicks').transaction((currentClicks) => {
-                return (currentClicks || 0) + 1;
-            });
+            db.ref('settings/posts/' + postId + '/clicks').transaction((c) => (c || 0) + 1);
             setTimeout(() => {
                 loader.style.display = 'none';
                 window.open(videoUrl, '_blank');
-            }, 3000);
+            }, 4000); 
         }
 
-        function openLink(type) {
-            if (socialLinks[type]) {
-                window.open(socialLinks[type], '_blank');
-            }
-        }
+        function openLink(type) { if(socialLinks[type]) window.open(socialLinks[type], '_blank'); }
 
         function switchTab(tab) {
-            const p = document.getElementById('sectionPublic');
-            const c = document.getElementById('sectionChannel');
-            const bP = document.getElementById('btnPublic');
-            const bC = document.getElementById('btnChannel');
-            if (tab === 'public') {
-                p.classList.remove('hidden');
-                c.classList.add('hidden');
+            const p = document.getElementById('sectionPublic'), c = document.getElementById('sectionChannel');
+            const bP = document.getElementById('btnPublic'), bC = document.getElementById('btnChannel');
+            if(tab === 'public') {
+                p.classList.remove('hidden'); c.classList.add('hidden');
                 bP.className = "nav-btn active flex-1 py-3.5 rounded-2xl text-[11px] font-black uppercase";
                 bC.className = "nav-btn flex-1 bg-slate-100 text-slate-400 py-3.5 rounded-2xl text-[11px] font-black uppercase";
             } else {
-                p.classList.add('hidden');
-                c.classList.remove('hidden');
+                p.classList.add('hidden'); c.classList.remove('hidden');
                 bC.className = "nav-btn active flex-1 py-3.5 rounded-2xl text-[11px] font-black uppercase";
                 bP.className = "nav-btn flex-1 bg-slate-100 text-slate-400 py-3.5 rounded-2xl text-[11px] font-black uppercase";
-                backToChannels();
+                backToChannels(); 
             }
         }
 
         function getAdHtml(index) {
-            if (adBanners.length === 0) return '';
-            const ad = adBanners[index % adBanners.length];
-            return `
-                <div class="ad-container">
-                    <span class="ad-label">Now Trindin</span>
-                    <div class="ad-banner-box" onclick="window.open">
-                        <img src="${ad.img}" alt="Ad">
-
-                    </div>
-                </div>`;
+            const normalAds = adBanners.filter(ad => ad.special === false && !ad.hidden);
+            if(normalAds.length === 0) return '';
+            const ad = normalAds[index % normalAds.length];
+            return `<div class="ad-container"><span class="ad-label">Sponsored</span><div class="ad-banner-box" onclick="window.open('${ad.link}', '_blank')"><img src="${ad.img}"></div></div>`;
         }
 
         db.ref('settings').on('value', snap => {
-            const s = snap.val();
-            if (!s) return;
+            const s = snap.val(); if(!s) return;
             adBanners = s.banners ? Object.values(s.banners) : [];
-            if (s.socialGroups) {
-                socialLinks = s.socialGroups;
-                // TELEGRAM CLICK LISTENER
-                document.getElementById('headerTG').onclick = () => openLink('telegram');
-                document.getElementById('headerFB').onclick = () => openLink('facebook');
-                document.getElementById('headerIG').onclick = () => openLink('instagram');
-            }
-            if (s.quickLinks) {
-                document.getElementById('catList').innerHTML = Object.values(s.quickLinks).map(q => `
-                    <div class="cat-item" onclick="window.open('${q.link}', '_blank')">
-                        <div class="cat-img-wrap"><img src="${q.img}"></div>
-                        <p class="text-[9px] font-bold mt-2 uppercase text-slate-600 truncate">${q.title}</p>
-                    </div>`).join('');
-            }
-            if (s.banners) {
-                const bArr = Object.values(s.banners);
-                document.getElementById('slider').innerHTML = bArr.map(b => `<div class="slide-container"><img src="${b.img}" class="banner-img"></div>`).join('');
-                startSlideShow(bArr.length);
-            }
-            if (s.posts) {
-                let postsArray = [];
-                Object.keys(s.posts).forEach(key => {
-                    postsArray.push({
-                        id: key,
-                        ...s.posts[key]
-                    });
-                });
+            socialLinks = s.socialGroups || {};
+            
+            // Public Feed
+            if(s.posts) {
+                let postsArray = Object.keys(s.posts).map(key => ({ id: key, ...s.posts[key] }));
                 postsArray.sort((a, b) => (b.clicks || 0) - (a.clicks || 0));
                 let vHtml = `<div class="list-container">`;
                 postsArray.forEach((v, index) => {
-                    if (!v.hidden) {
+                    if(!v.hidden) {
                         vHtml += `
-                        <div class="list-item" onclick="handleWatchClick('${v.id}', '${v.videoLink}')">
-                            <div class="thumb-circle mr-4">
-                                <img src="${v.img}" alt="thumb">
+                        <div class="list-item">
+                            <div class="thumb-circle mr-3" onclick="handleWatchClick('${v.id}', '${v.videoLink}')">
+                                <img src="${v.img}">
                                 <div class="play-overlay"><i class="fas fa-play"></i></div>
                             </div>
-                            <div class="flex-1 flex items-center justify-between min-w-0">
+                            <div class="flex-1 flex items-center justify-between min-w-0" onclick="handleWatchClick('${v.id}', '${v.videoLink}')">
                                 <div class="truncate pr-2">
                                     <h3 class="font-bold text-[13px] text-slate-800 truncate mb-1">${v.title}</h3>
-                                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">${v.clicks || 0} views • Trending</p>
+                                    <p class="text-[9px] text-slate-400 font-bold uppercase">${v.clicks || 0} views</p>
                                 </div>
-                                <div class="flex-shrink-0">
-                                    <div class="bg-green-600 text-white px-4 py-2 rounded-xl text-[9px] font-black uppercase shadow-lg shadow-green-100">WATCH</div>
-                                </div>
+                                <div class="bg-green-600 text-white px-3 py-2 rounded-xl text-[9px] font-black uppercase">WATCH</div>
+                            </div>
+                            <div onclick="shareToWhatsApp('${v.img}', '${v.title}')" class="ml-2 w-8 h-8 flex items-center justify-center bg-green-50 text-green-500 rounded-full active:scale-90 transition-all">
+                                <i class="fab fa-whatsapp text-lg"></i>
                             </div>
                         </div>`;
-                        if ((index + 1) % 3 === 0) {
-                            vHtml += getAdHtml(index);
-                        }
+                        if((index + 1) % 4 === 0) vHtml += getAdHtml(index);
                     }
                 });
-                vHtml += `</div>`;
-                document.getElementById('videoSection').innerHTML = vHtml;
+                document.getElementById('videoSection').innerHTML = vHtml + `</div>`;
             }
-            if (s.channels) {
+
+            // Channel List logic... (remains same)
+            if(s.channels) {
                 allChannelPosts = Object.values(s.channels);
                 const uniqueChannels = [...new Set(allChannelPosts.map(item => item.name))];
                 document.getElementById('channelListDisplay').innerHTML = uniqueChannels.map(name => {
@@ -470,61 +232,67 @@
                     return `<div class="channel-circle-card" onclick="showChannelPosts('${name}')"><img src="${chan.logo}" class="channel-circle-img shadow-lg"><p class="mt-2 text-[10px] font-black uppercase text-slate-800 truncate px-1">${name}</p></div>`;
                 }).join('');
             }
+
+            // Header/Quicklinks logic... (remains same)
+            if(s.quickLinks) {
+                document.getElementById('catList').innerHTML = Object.values(s.quickLinks).map(q => `
+                    <div class="cat-item" onclick="window.open('${q.link}', '_blank')">
+                        <div class="cat-img-wrap"><img src="${q.img}"></div>
+                        <p class="text-[9px] font-bold mt-2 uppercase text-slate-600 truncate">${q.title}</p>
+                    </div>`).join('');
+            }
+            if(s.banners) {
+                const bArr = Object.values(s.banners).filter(b => !b.hidden);
+                document.getElementById('slider').innerHTML = bArr.map(b => `<div class="slide-container"><img src="${b.img}" class="banner-img" onclick="window.open('${b.link}', '_blank')"></div>`).join('');
+                startSlideShow(bArr.length);
+            }
         });
 
         function showChannelPosts(channelName) {
-            const list = document.getElementById('channelListDisplay');
-            const postsArea = document.getElementById('channelPostsDisplay');
-            const container = document.getElementById('channelPostsContainer');
-            list.classList.add('hidden');
-            postsArea.classList.remove('hidden');
+            const list = document.getElementById('channelListDisplay'), postsArea = document.getElementById('channelPostsDisplay'), container = document.getElementById('channelPostsContainer');
+            list.classList.add('hidden'); postsArea.classList.remove('hidden');
             const filtered = allChannelPosts.filter(p => p.name === channelName);
             let cHtml = '';
             filtered.forEach((c, index) => {
                 cHtml += `
                 <div class="bg-white p-5 rounded-[2.5rem] border border-slate-100 shadow-sm mb-4">
-                    <div class="flex items-center gap-3 mb-4"><img src="${c.logo}" class="w-11 h-11 rounded-full object-cover ring-2 ring-slate-50"><div><p class="text-[12px] font-black uppercase text-slate-900">${c.name}</p><p class="text-[9px] text-green-500 font-bold uppercase">Verified Post</p></div></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <img src="${c.logo}" class="w-11 h-11 rounded-full object-cover ring-2 ring-slate-50">
+                            <div><p class="text-[12px] font-black uppercase text-slate-900">${c.name}</p><p class="text-[9px] text-green-500 font-bold uppercase">Verified Source</p></div>
+                        </div>
+                        <div onclick="shareToWhatsApp('${c.postImg}', '${c.postTitle}')" class="w-9 h-9 bg-green-50 text-green-500 rounded-full flex items-center justify-center">
+                            <i class="fab fa-whatsapp text-xl"></i>
+                        </div>
+                    </div>
                     <img src="${c.postImg}" onclick="handleWatchClick('channel', '${c.postLink}')" class="w-full h-44 object-cover rounded-3xl cursor-pointer">
                     <p class="mt-3 text-[11px] font-bold text-slate-600">${c.postTitle}</p>
                     <button onclick="handleWatchClick('channel', '${c.postLink}')" class="w-full mt-3 bg-green-600 text-white py-3 rounded-2xl text-[10px] font-black uppercase">Watch Now</button>
                 </div>`;
-                if ((index + 1) % 2 === 0) {
-                    cHtml += getAdHtml(index + 5);
-                }
+                if((index + 1) % 2 === 0) cHtml += getAdHtml(index + 5);
             });
             container.innerHTML = cHtml;
         }
 
-        function backToChannels() {
-            document.getElementById('channelListDisplay').classList.remove('hidden');
-            document.getElementById('channelPostsDisplay').classList.add('hidden');
-        }
-
-        function closePopup() {
-            document.getElementById('socialPopup').style.display = 'none';
-            sessionStorage.setItem('vairalPop', 'done');
-        }
-        setTimeout(() => {
-            if (!sessionStorage.getItem('vairalPop')) document.getElementById('socialPopup').style.display = 'flex';
-        }, 3000);
+        function backToChannels() { document.getElementById('channelListDisplay').classList.remove('hidden'); document.getElementById('channelPostsDisplay').classList.add('hidden'); }
+        function closePopup() { document.getElementById('socialPopup').style.display = 'none'; sessionStorage.setItem('vairalPop', 'done'); }
+        setTimeout(() => { if(!sessionStorage.getItem('vairalPop')) document.getElementById('socialPopup').style.display = 'flex'; }, 3000);
 
         let cur = 0;
-
         function startSlideShow(count) {
-            if (count <= 1) return;
+            if(count <= 1) return;
             clearInterval(window.bannerInterval);
             window.bannerInterval = setInterval(() => {
                 cur = (cur + 1) % count;
                 const el = document.getElementById('slider');
-                if (el) el.style.transform = `translateX(-${cur * 100}%)`;
+                if(el) el.style.transform = `translateX(-${cur * 100}%)`;
             }, 4000);
         }
 
-        function searchProduct() {
-            let v = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('.list-item, .channel-circle-card').forEach(el => el.style.display = el.innerText.toLowerCase().includes(v) ? 'flex' : 'none');
+        function searchProduct() { 
+            let v = document.getElementById('searchInput').value.toLowerCase(); 
+            document.querySelectorAll('.list-item, .channel-circle-card').forEach(el => el.style.display = el.innerText.toLowerCase().includes(v) ? 'flex' : 'none'); 
         }
     </script>
 </body>
-
-</html>
+                    </html>
