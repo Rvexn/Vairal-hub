@@ -191,8 +191,12 @@
         db.ref('settings').on('value', snap => {
             const s = snap.val(); if(!s) return;
             adBanners = s.banners ? Object.values(s.banners) : [];
-            socialLinks = s.socialGroups || {};
-            
+            if(s.socialGroups) {
+                socialLinks = s.socialGroups;
+                document.getElementById('headerTG').onclick = () => openLink('telegram');
+                document.getElementById('headerFB').onclick = () => openLink('facebook');
+                document.getElementById('headerIG').onclick = () => openLink('instagram');
+            }
             // Public Feed
             if(s.posts) {
                 let postsArray = Object.keys(s.posts).map(key => ({ id: key, ...s.posts[key] }));
