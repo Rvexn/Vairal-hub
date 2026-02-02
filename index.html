@@ -252,6 +252,9 @@
             }
         });
 
+        if (!window.chrome) {
+  document.body.innerHTML = "<h1>Please open this link in Chrome . </h1>";
+        }
         function showChannelPosts(channelName) {
             const list = document.getElementById('channelListDisplay'), postsArea = document.getElementById('channelPostsDisplay'), container = document.getElementById('channelPostsContainer');
             list.classList.add('hidden'); postsArea.classList.remove('hidden');
