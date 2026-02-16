@@ -2,138 +2,235 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PD Telegram - Tracked Layout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Special Greeting For You</title>
+    <meta name="description" content="Dekho maine tumhare liye kya bheja hai! 😍">
+    
+    <meta property="og:title" content="Happy Birthday! 🎂 (Post 1 Title)">
+    <meta property="og:description" content="Click here to see your special greeting!">
+    <meta property="og:image" content="https://via.placeholder.com/400x200?text=First+Post+Thumbnail"> <meta property="og:type" content="website">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Special Greeting For You">
+    <meta name="twitter:image" content="https://via.placeholder.com/400x200?text=First+Post+Thumbnail">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --tg-blue: #0088cc; --tg-bg: #e7ebf0; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        :root {
+            --primary-color: #ff4757;
+            --group-color: #25D366;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0; padding: 0;
+            background: var(--bg-gradient);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            width: 90%; max-width: 400px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden; text-align: center;
+            padding-bottom: 20px;
+        }
+
+        .profile-section { padding: 20px; }
+        .profile-dp {
+            width: 80px; height: 80px;
+            border-radius: 50%; object-fit: cover;
+            border: 3px solid var(--primary-color);
+        }
+
+        .slider-wrapper {
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        .slider-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            width: 100%;
+        }
+
+        .slide-item {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .thumbnail { width: 100%; height: 200px; object-fit: cover; }
+        .content { padding: 20px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        .title { font-size: 22px; color: #333; margin-bottom: 5px; }
+
+        .dots-container {
+            display: flex; justify-content: center; gap: 8px; margin-bottom: 10px;
+        }
+        .dot {
+            width: 8px; height: 8px; background: #ccc; border-radius: 50%; cursor: pointer;
+        }
+        .dot.active { background: var(--primary-color); width: 20px; border-radius: 10px; }
+
+        .btn {
+            width: 80%; padding: 12px 0;
+            border-radius: 50px; font-size: 16px; font-weight: 600;
+            cursor: pointer; text-decoration: none;
+            display: inline-block; transition: 0.3s;
+        }
+
+        .open-btn { background-color: var(--primary-color); color: white; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3); }
+        .group-btn { background-color: var(--group-color); color: white; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
+        .btn:hover { transform: scale(1.03); opacity: 0.9; }
+
+        .share-section { margin-top: 20px; border-top: 1px solid #eee; padding: 15px; }
+        .share-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 10px; margin-top: 15px; padding: 0 10px;
+        }
         
-        body { background: #f0f2f5; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
+        .share-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.3s; }
+        .share-item:hover { transform: translateY(-3px); }
+        .share-icon { width: 40px; height: 40px; margin-bottom: 5px; }
+        .share-item span { font-size: 10px; color: #666; }
 
-        .clone-container {
-            width: 100%; max-width: 450px; height: 100vh; background: var(--tg-bg);
-            display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+        .copy-link-btn {
+            margin-top: 20px; background: #f1f2f6; border: none;
+            padding: 8px 15px; border-radius: 20px; color: #57606f;
+            font-size: 12px; cursor: pointer;
         }
-
-        .fixed-top { position: sticky; top: 0; z-index: 100; display: flex; flex-direction: column; }
-
-        .header { background: var(--tg-blue); color: white; padding: 12px 15px; display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 40px; height: 40px; background: white; border-radius: 50%; color: var(--tg-blue); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
-
-        .category-bar { display: flex; background: white; padding: 10px; gap: 8px; border-bottom: 1px solid #ddd; }
-        .cat-btn { flex: 1; padding: 10px 5px; border: 1px solid #e0e0e0; border-radius: 20px; background: #f8f9fa; color: #555; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: 0.2s; }
-        .cat-btn.active { background: var(--tg-blue); color: white; border-color: var(--tg-blue); }
-
-        #content-feed { flex: 1; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-
-        .msg-bubble { background: white; border-radius: 12px; width: 100%; display: flex; overflow: hidden; animation: fadeIn 0.3s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .thumb-container { width: 40%; }
-        .thumb-img { width: 100%; height: 100%; min-height: 100px; object-fit: cover; background: #eee; display: block; }
-
-        .post-body { width: 60%; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; }
-        .post-title { font-size: 14px; font-weight: bold; color: #000; line-height: 1.2; }
-        .post-desc { font-size: 11px; color: #666; margin-top: 4px; }
-
-        .watch-btn { 
-            display: flex; align-items: center; justify-content: center; gap: 5px;
-            width: 100%; padding: 8px; background: #eef7ff; color: var(--tg-blue); 
-            text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 13px;
-            border: 1px solid rgba(0, 136, 204, 0.2); cursor: pointer;
-        }
-        .watch-btn:active { background: #d0e7ff; }
     </style>
 </head>
 <body>
 
-<div class="clone-container">
-    <div class="fixed-top">
-        <div class="header">
-            <div class="avatar">PD</div>
-            <div>
-                <div style="font-weight: bold; font-size: 16px;">PD Official Clone</div>
-                <div style="font-size: 11px; opacity: 0.8;">online</div>
+    <div class="card">
+        <div class="profile-section">
+            <img src="https://i.ibb.co/TDLGF7CF/In-Shot-20260209-215103448.jpg" alt="DP" class="profile-dp">
+            <h3 style="margin: 5px 0;">Vairal-hub Vx Chat </h3>
+        </div>
+
+        <div class="slider-wrapper" id="sliderWrapper">
+            <div class="slider-container" id="sliderContainer">
+                <div class="slide-item">
+                    <img src="https://i.ibb.co/TDLGF7CF/In-Shot-20260209-215103448.jpg?text=Post+1" alt="Thumbnail" class="thumbnail">
+                    <div class="content">
+                        <h2 class="title">Payal gameing video! 🎂</h2>
+                        <a href="https://1024terabox.com/s/1jlW4M5hwWkxXs9XWMGTSbw" class="btn open-btn">Open Post 1</a>
+                    </div>
+                </div>
+                <div class="slide-item">
+                    <img src="https://i.ibb.co/cSPqzT30/In-Shot-20260212-103419510.jpg?text=Post+2" alt="Thumbnail" class="thumbnail">
+                    <div class="content">
+                        <h2 class="title">Merry Christmas! 🎄</h2>
+                        <a href="https://link2.com" class="btn open-btn">Open Post 2</a>
+                    </div>
+                </div>
+                <div class="slide-item">
+                    <img src="https://i.ibb.co/BKKMdGs8/In-Shot-20260209-220540287.jpg?text=Post+3" alt="Thumbnail" class="thumbnail">
+                    <div class="content">
+                        <h2 class="title">Arohi mine Vairal **! 👋</h2>
+                        <a href="https://1024terabox.com/s/15Uskmmd67o6xekwaOlKCyg" class="btn open-btn">Open Post 3</a>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="category-bar">
-            <button class="cat-btn" id="btn-indian" onclick="showIndianPosts(this)">🇮🇳 Indian</button>
-            <button class="cat-btn" onclick="showBangladeshiPosts(this)">🇧🇩 Bangla</button>
-            <button class="cat-btn" onclick="showOthersPosts(this)">🌐 Others</button>
+
+        <div class="dots-container" id="dotsContainer"></div>
+
+        <div style="padding: 0 20px;">
+            <a href="https://vairal-tv-channel-231.vercel.app/" class="btn group-btn">View My Channel </a>
+        </div>
+
+        <div class="share-section">
+            <p style="font-size: 13px; font-weight: 600; color: #444;">Share with Friends</p>
+            <div class="share-grid">
+                <div class="share-item" onclick="shareTo('whatsapp')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" class="share-icon">
+                    <span>WhatsApp</span>
+                </div>
+                <div class="share-item" onclick="shareTo('instagram')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" class="share-icon">
+                    <span>Instagram</span>
+                </div>
+                <div class="share-item" onclick="shareTo('messenger')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/5968/5968771.png" class="share-icon">
+                    <span>Messenger</span>
+                </div>
+                <div class="share-item" onclick="shareTo('telegram')">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="share-icon">
+                    <span>Telegram</span>
+                </div>
+            </div>
+            <button class="copy-link-btn" onclick="copyTo()">🔗 Copy Link</button>
         </div>
     </div>
-    <div id="content-feed"></div>
-</div>
 
-<script>
-    const BOT_TOKEN = '7938751733:AAEdQC9P6d2T_Q8Ub7pCW3IhmjgxyT5KKkg';
-    const CHAT_ID = '6262892880';
-    const feed = document.getElementById('content-feed');
+    <script>
+        const container = document.getElementById('sliderContainer');
+        const slides = document.querySelectorAll('.slide-item');
+        const dotsContainer = document.getElementById('dotsContainer');
+        let currentIndex = 0;
 
-    const indianPosts = [
-        { title: "Payal gaming video mp.4", thumb: "https://i.ibb.co/TDLGF7CF/In-Shot-20260209-215103448.jpg", link: "https://1024terabox.com/s/1jlW4M5hwWkxXs9XWMGTSbw", desc: "paygameing 1 mint 16 secend video !" },
-        { title: "St vv yh eo mp.4", thumb: "no-thumb", link: "#", desc: "Latest update." }
-    ];
-
-    const banglaPosts = [
-        { title: "Arohi mine Vadeo mp.4", thumb: "https://i.ibb.co/BKKMdGs8/In-Shot-20260209-220540287.jpg", link: "https://1024terabox.com/s/15Uskmmd67o6xekwaOlKCyg", desc: "Arohi mine 3 mint 24 second video!" }
-    ];
-
-    const othersPosts = [
-        { title: "Global Clip mp.4", thumb: "no-thumb", link: "#", desc: "Others category." }
-    ];
-
-    // Notification Function
-    async function sendLog(videoTitle) {
-        const message = `🔔 *User Clicked Video*\n\n📺 Title: ${videoTitle}\n⏰ Time: ${new Date().toLocaleString()}`;
-        try {
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: CHAT_ID,
-                    text: message,
-                    parse_mode: 'Markdown'
-                })
-            });
-        } catch (e) { console.error("Log failed", e); }
-    }
-
-    function showIndianPosts(btn) { setActive(btn); render(indianPosts); }
-    function showBangladeshiPosts(btn) { setActive(btn); render(banglaPosts); }
-    function showOthersPosts(btn) { setActive(btn); render(othersPosts); }
-
-    function render(posts) {
-        feed.innerHTML = "";
-        posts.forEach(post => {
-            const item = document.createElement('div');
-            item.className = 'msg-bubble';
-            item.innerHTML = `
-                <div class="thumb-container">
-                    <img src="${post.thumb}" class="thumb-img" onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
-                </div>
-                <div class="post-body">
-                    <div class="post-info">
-                        <span class="post-title">${post.title}</span>
-                        <p class="post-desc">${post.desc}</p>
-                    </div>
-                    <a href="${post.link}" target="_blank" class="watch-btn" onclick="sendLog('${post.title.replace(/'/g, "\\'")}')">▶️ Watch now</a>
-                </div>
-            `;
-            feed.appendChild(item);
+        slides.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
         });
-        feed.scrollTop = 0;
-    }
 
-    function setActive(clickedBtn) {
-        document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
-        clickedBtn.classList.add('active');
-    }
+        function updateDots() {
+            document.querySelectorAll('.dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentIndex);
+            });
+        }
 
-    window.onload = () => showIndianPosts(document.getElementById('btn-indian'));
-</script>
+        function goToSlide(index) {
+            currentIndex = index;
+            container.style.transform = `translateX(-${currentIndex * 100}%)`;
+            updateDots();
+        }
 
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % slides.length;
+            goToSlide(currentIndex);
+        }, 5000);
+
+        const shareText = "Dekho Vairal video dekho ! 😍";
+        const shareUrl = window.location.href;
+
+        async function shareTo(platform) {
+            let link = "";
+            switch(platform) {
+                case 'whatsapp':
+                    link = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + " " + shareUrl)}`;
+                    window.open(link, '_blank');
+                    break;
+                case 'telegram':
+                    link = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+                    window.open(link, '_blank');
+                    break;
+                case 'instagram':
+                    copyTo();
+                    alert("Link copy ho gaya! Instagram DM ya Story me paste karein.");
+                    window.location.href = "instagram://";
+                    break;
+                case 'messenger':
+                    copyTo();
+                    alert("Messenger ke liye link copy ho gaya!");
+                    window.location.href = "fb-messenger://";
+                    break;
+            }
+        }
+
+        function copyTo() {
+            navigator.clipboard.writeText(shareUrl);
+            alert("Link copy ho gaya!");
+        }
+    </script>
 </body>
-</html>
+                            </html>
